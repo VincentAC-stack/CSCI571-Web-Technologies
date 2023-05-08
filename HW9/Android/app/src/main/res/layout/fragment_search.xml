@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".fragments.SearchFragment"
+    android:background="@color/white"
+    android:id="@+id/Search_fragment">
+
+    <androidx.cardview.widget.CardView
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="@color/black"
+        android:elevation="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20sp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Keyword"
+                android:textColor="@color/ActionBarTitleColor"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
+
+                <AutoCompleteTextView
+                    android:id="@+id/keyword_auto"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:hint="Enter the Keyword"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/HintColor"
+                    android:backgroundTint="@color/ActionBarTitleColor"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:ems="10">
+
+                    <requestFocus/>
+                </AutoCompleteTextView>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:progressTint="@color/ActionBarTitleColor"
+                    android:indeterminateTint="@color/ActionBarTitleColor"
+                    android:layout_marginTop="20dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Distance"
+                android:textColor="@color/ActionBarTitleColor"
+                android:textSize="20sp"/>
+
+            <EditText
+                android:id="@+id/distance_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:backgroundTint="@color/ActionBarTitleColor"
+                android:text="10"
+                android:textColor="@color/white"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Category"
+                android:textColor="@color/ActionBarTitleColor"
+                android:textSize="20sp"/>
+
+            <Spinner
+                android:id="@+id/cat_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:backgroundTint="@color/ActionBarTitleColor"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Location"
+                    android:textColor="@color/ActionBarTitleColor"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:text="Auto-Detect"
+                    android:textColor="@color/HintColor"
+                    android:gravity="end"/>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/loc_switch"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:trackTint="@color/switch_track_selector"
+                    app:thumbTint="@color/switch_thumb_selector"/>
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/loc_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="Enter the Location"
+                android:textColor="@color/white"
+                android:textColorHint="@color/HintColor"
+                android:backgroundTint="@color/ActionBarTitleColor"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/search_btn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Search"
+                    android:textAllCaps="false"
+                    android:textSize="20sp"
+                    android:background="@drawable/search_rounded_corner"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginBottom="15dp"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/clear_btn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Clear"
+                    android:textAllCaps="false"
+                    android:textSize="20sp"
+                    android:background="@drawable/clear_rounded_corner"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="15dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

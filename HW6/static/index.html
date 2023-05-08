@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Search</title>
+
+    <link rel="stylesheet" href="./events.css">
+</head>
+
+<body style="margin: 0">
+    <div class="container">
+        <div class="events-search-text">Events Search</div>
+        <hr>
+        <form action="/search" method="get" id="my-form">
+            <div class="input-row1-container">
+                <label for="keyword" class="input-text-required">Keyword</label>
+                <div>
+                    <input class="keyword-box" type="text" name="input_kw" id="keyword" required>
+                </div>
+            </div>
+
+            <div class="input-row2-container">
+                <div>
+                    <label for="distance" class="input-text-distance">Distance (miles)</label>
+                    <label for="category" class="input-text-category-required">Category</label>
+                </div>
+
+                <div>
+                    <input class="distance-box" type="number" name="input_dist" id="distance" placeholder="10">
+                    <select class="category-box" name="input_cat" id="category">
+                        <option value="Default">Default</option>
+                        <option value="Music">Music</option>
+                        <option value="Sports">Sports</option>
+                        <option value="ArtsTheatre">Arts & Theatre</option>
+                        <option value="Film">Film</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row3-container">
+                <label for="location" class="input-text-required">Location</label>
+                <span>
+                    <input style="margin-left: 8px; margin-right: 0px;" type="checkbox" name="" id="auto-detection"
+                        onclick="boxdisappear()">
+                    <label class="check-text" for="auto-detection">Auto-Detect Location</label>
+                </span>
+                <div>
+                    <input class="location-box" type="text" name="input_location" id="location" required>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button class="search-button" id="searchBtn">SEARCH</button>
+                <button class="clear-button" type="reset" id="clearBtn" onclick="ClearData()">CLEAR</button>
+            </div>
+        </form>
+
+    </div>
+
+    <div id='No_record'>
+
+    </div>
+    <table id="Display_table">
+
+    </table>
+
+
+    <div id="Event_details">
+
+    </div>
+    <div id="Icon_show_venue">
+
+    </div>
+    <div id="Venue_details">
+
+    </div>
+
+    <script>
+        var searchBtn = document.getElementById("searchBtn");
+        var detect = document.getElementById("auto-detection");
+        var locbox = document.getElementById("location");
+
+        function boxdisappear() {
+            if (detect.checked === true) {
+                locbox.style.display = 'none';
+                let IP_API = "https://ipinfo.io/?token=5f3978d3111782"
+                fetch(IP_API)
+                    .then(res => {
+                        if (res.status === 200)
+                            return res.json();
+                        else
+                            throw new Error("Fail to connect server!")
+                    })
+                    .then(data => {
+                        locbox.value = data['loc'];
+                    })
+                    .catch(err => {
+                        console.log("Fail to load data!", err);
+                    })
+            } else {
+                locbox.value = '';
+                locbox.style.display = 'block';
+            }
+
+        }
+
+        const myForm = document.getElementById("my-form");
+        myForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let kwvalue = document.getElementById("keyword").value.trim();
+            let disvalue = document.getElementById("distance").value.trim();
+            let catvalue = document.getElementById("category").value.trim();
+            let locvalue = document.getElementById("location").value.trim();
+
+            if (disvalue === '')
+                disvalue = 10;
+
+            ClearEventVenueData();
+
+            let DisplayTable = document.getElementById("Display_table");
+            DisplayTable.style.display = 'table';
+
+            let Query_string = "http://127.0.0.1:8080/search?";
+            // let Query_string = "https://hw6-flask.wl.r.appspot.com/search?";
+            Query_string += "input_kw=" + kwvalue + "&input_dist=" + disvalue + "&input_cat=" + catvalue + "&input_location=" + locvalue;
+            console.log(Query_string);
+
+            fetch(Query_string)
+                .then(res => {
+                    if (res.status === 200)
+                        return res.json();
+                    else
+                        throw new Error("Fail to connect server!");
+                })
+                .then(data => {
+                    console.log(data);
+                    if (data === 'No Records found' || data['Event'].length === 0) {
+                        let table = document.getElementById("Display_table");
+                        table.innerHTML = '';
+                        let no_record = document.getElementById("No_record");
+                        no_record.innerHTML = `<div class="style_No_records" > No Records found</div> `;
+                    } else {
+                        let table = document.getElementById("Display_table");
+                        if (kwvalue !== '' && locvalue !== '') {
+                            table.innerHTML =
+                                `
+                                <thead id="event_result_head" >
+                                    <tr>
+                                        <th onclick="sortTable(0)">Date</th>
+                                        <th onclick="sortTable(1)">Icon</th>
+                                        <th onclick="sortTable(2)">Event</th>
+                                        <th onclick="sortTable(3)">Genre</th>
+                                        <th onclick="sortTable(4)">Venue</th>
+                                    </tr>
+                                </thead> 
+                                `;
+                        }
+
+                        let tbody = document.createElement("tbody");
+                        table.appendChild(tbody);
+
+                        for (let row = 0; row < data['Date'].length; row++) {
+                            if (data['Date'][row].split(/(\s+)/)[2] !== "Undefined") {
+                                tbody.innerHTML +=
+                                    `
+                                    <tr>
+                                        <td id="result_Date">${data['Date'][row].split(/(\s+)/)[0]} <br/> ${data['Date'][row].split(/(\s+)/)[2]}</td>
+                                        <td id="result_img"><img src="${data['Icon'][row]}"></img></td> 
+                                        <td id="result_Event" onclick="showEventDetail(${row})">${data['Event'][row]}</td> 
+                                        <td id="result_Genre">${data['Genre'][row]}</td> 
+                                        <td id="result_Venue">${data['Venue'][row]}</td> 
+                                    </tr> 
+                                    `
+                            } else {
+                                tbody.innerHTML +=
+                                    `
+                                    <tr>
+                                        <td id="result_Date">${data['Date'][row].split(/(\s+)/)[0]}</td>
+                                        <td id="result_img"><img src="${data['Icon'][row]}"></img></td> 
+                                        <td id="result_Event" onclick="showEventDetail(${row})">${data['Event'][row]}</td> 
+                                        <td id="result_Genre">${data['Genre'][row]}</td> 
+                                        <td id="result_Venue">${data['Venue'][row]}</td> 
+                                    </tr> 
+                                    `
+                            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log("Fail to load data!", err);
+                })
+        });
+
+        //Reference from: https://codepen.io/andrese52/pen/ZJENqp
+        function sortTable(n) {
+            var table,
+                rows,
+                switching,
+                i,
+                x,
+                y,
+                shouldSwitch,
+                dir,
+                switchcount = 0;
+            table = document.getElementById("Display_table");
+            switching = true;
+            //Set the sorting direction to ascending:
+            dir = "asc";
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.getElementsByTagName("TR");
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < rows.length - 1; i++) { //Change i=0 if you have the header th a separate table.
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    /*check if the two rows should switch place,
+                    based on the direction, asc or desc:*/
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    //Each time a switch is done, increase this count by 1:
+                    switchcount++;
+                } else {
+                    /*If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again.*/
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        //Reference from: https://codepen.io/murliprajapati/pen/RwwLYyR
+        function scrollToElement() {
+            var elmnt = document.getElementById("Event_details");
+            elmnt.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function showEventDetail(eventRow) {
+            event.preventDefault();
+            let kwvalue = document.getElementById("keyword").value.trim();
+            let disvalue = document.getElementById("distance").value.trim();
+            let catvalue = document.getElementById("category").value.trim();
+            let locvalue = document.getElementById("location").value.trim();
+
+            if (disvalue === '')
+                disvalue = 10;
+
+            ClearVenueData();
+
+            let Query_string = "http://127.0.0.1:8080/event?";
+            // let Query_string = "https://hw6-flask.wl.r.appspot.com/event?";
+            Query_string += "input_kw=" + kwvalue + "&input_dist=" + disvalue + "&input_cat=" + catvalue + "&input_location=" + locvalue + "&Row=" + eventRow;
+
+            fetch(Query_string)
+                .then(res => {
+                    if (res.status === 200)
+                        return res.json();
+                    else
+                        throw new Error("Fail to connect server!")
+                })
+                .then(data => {
+                    console.log(data);
+                    let event_box = document.getElementById("Event_details")
+                    event_box.innerHTML =
+                        `
+                        <h2 id="event-head">${data['Event Name']}</h2>
+                        `
+                    if (data['localDate'] !== "Undefined") {
+                        if (data['localTime'] !== "Undefined") {
+                            event_box.innerHTML +=
+                                `
+                            <span id="event-title-Date">Date</span> <br>
+                            <span id="event-detail">${data['localDate']} ${data['localTime']}</span> <br>
+                            `
+                        } else {
+                            event_box.innerHTML +=
+                                `
+                            <span id="event-title-Date">Date</span> <br>
+                            <span id="event-detail">${data['localDate']}</span> <br>
+                            `
+                        }
+                    }
+                    if (data['Artist/Team'] != "Undefined") {
+                        event_box.innerHTML +=
+                            `
+                        <span id="event-title-Artist">Artist/Team</span> <br>
+                        <div id="Event_details_left"></div>
+                        `
+                        let event_box_left = document.getElementById("Event_details_left");
+                        if (data['Artist/Team'].length === 1 && data['Artist/Team URL'][0] !== "Undefined") {
+                            event_box_left.innerHTML +=
+                                `
+                                <span id="event-detail-link-first"> <a href="${data['Artist/Team URL'][0]}" target="_blank">${data['Artist/Team'][0]}</a> </span> <br>
+                                `
+                        } else if (data['Artist/Team'].length === 1 && data['Artist/Team URL'][0] === "Undefined") {
+                            event_box_left.innerHTML +=
+                                `
+                                <span id="event-detail-link-first"> ${data['Artist/Team'][0]} </span> <br>
+                                `
+                        } else if (data['Artist/Team'].length > 1 && data['Artist/Team URL'][0] !== "Undefined") {
+                            event_box_left.innerHTML +=
+                                `
+                                    <span id="event-detail-link-first"> <a href="${data['Artist/Team URL'][0]}" target="_blank">${data['Artist/Team'][0]}</a> </span>
+                                `
+                            event_box_left.innerHTML += `<span id="event-detail-genre"> |</span>`;
+                            for (let i = 1; i < data['Artist/Team URL'].length - 1; i++) {
+                                if (data['Artist/Team URL'][i] != "Undefined") {
+                                    event_box_left.innerHTML +=
+                                        `
+                                    <span id="event-detail-link"> <a href="${data['Artist/Team URL'][i]}" target="_blank">${data['Artist/Team'][i]}</a> </span>
+                                    `
+                                    event_box_left.innerHTML += `<span id="event-detail-genre"> |</span>`;
+                                } else {
+                                    event_box_left.innerHTML +=
+                                        `
+                                    <span id="event-detail-link"> ${data['Artist/Team'][i]} </span>
+                                    `
+                                    event_box_left.innerHTML += `<span id="event-detail-genre"> |</span>`;
+                                }
+                            }
+                            if (data['Artist/Team URL'][data['Artist/Team URL'].length - 1] != "Undefined") {
+                                event_box_left.innerHTML +=
+                                    `
+                                    <span id="event-detail-link"> <a href="${data['Artist/Team URL'][data['Artist/Team URL'].length - 1]}" target="_blank">${data['Artist/Team'][data['Artist/Team URL'].length - 1]}</a> </span> <br>
+                                    `
+                            } else {
+                                event_box_left.innerHTML +=
+                                    `
+                                    <span id="event-detail-link"> ${data['Artist/Team'][data['Artist/Team URL'].length - 1]} </span> <br>
+                                    `
+                            }
+                        } else {
+                            event_box_left.innerHTML +=
+                                `
+                                    <span id="event-detail-link-first"> ${data['Artist/Team'][0]} </span>
+                                `
+                            event_box_left.innerHTML += `<span id="event-detail-genre"> |</span>`;
+                            for (let i = 1; i < data['Artist/Team URL'].length - 1; i++) {
+                                event_box_left.innerHTML +=
+                                    `
+                                    <span id="event-detail-link">${data['Artist/Team'][i]} </span>
+                                    `
+                                event_box_left.innerHTML += `<span id="event-detail-genre"> |</span>`;
+                            }
+                            event_box_left.innerHTML +=
+                                `
+                                    <span id="event-detail-link"> ${data['Artist/Team'][data['Artist/Team'].length - 1]} </span> <br>
+                                `
+                        }
+                    }
+
+                    if (data['Venue'] != "Undefined") {
+                        event_box.innerHTML +=
+                            `
+                            <span span id = "event-title-Venue" > Venue</span > <br>
+                            <span id="event-detail">${data['Venue']}</span> <br>
+                            `
+                    }
+                    const Genre_list = []
+                    if (data['Genres_segment'] != "Undefined") {
+                        Genre_list.push(data['Genres_segment']);
+                    }
+                    if (data['Genres_genre'] != "Undefined") {
+                        Genre_list.push(data['Genres_genre']);
+                    }
+                    if (data['Genres_subGenre'] != "Undefined") {
+                        Genre_list.push(data['Genres_subGenre']);
+                    }
+                    if (data['Genres_type'] != "Undefined") {
+                        Genre_list.push(data['Genres_type']);
+                    }
+                    if (data['Genres_subType'] != "Undefined") {
+                        Genre_list.push(data['Genres_subType']);
+                    }
+
+                    // console.log(Genre_list);
+
+                    if (Genre_list.length > 0) {
+                        event_box.innerHTML +=
+                            `
+                        <span id="event-title-Genres">Genres</span> <br>
+                        `
+                        if (Genre_list.length === 1) {
+                            event_box.innerHTML +=
+                                `
+                                <span id="event-detail">${Genre_list[0]}</span> <br>
+                            `
+                        } else {
+                            event_box.innerHTML +=
+                                `
+                                <span id="event-detail-genre-first">${Genre_list[0]} | </span>
+                            `
+                            for (let i = 1; i < Genre_list.length - 1; i++) {
+                                event_box.innerHTML +=
+                                    `
+                                    <span id="event-detail-genre">${Genre_list[i]}</span>
+                                `
+                                event_box.innerHTML += `<span id="event-detail-genre"> | </span>`;
+                            }
+                            event_box.innerHTML +=
+                                `
+                                <span id="event-detail-genre">${Genre_list[Genre_list.length - 1]}</span> <br>
+                                    `
+                        }
+                    }
+
+                    if (data['Price Ranges'] !== "Undefined") {
+                        event_box.innerHTML +=
+                            `
+                            <span id="event-title-Price">Price Ranges</span> <br>
+                            <span id="event-detail">${data['Price Ranges'].split(/(\s+)/)[0]} - ${data['Price Ranges'].split(/(\s+)/)[2]} USD</span> <br>
+                            `
+                    }
+                    if (data['Ticket Status'] !== "Undefined") {
+                        event_box.innerHTML +=
+                            `
+                            <span id="event-title-Ticket">Ticket Status</span> <br>
+                            <span id="style_ticket_status">${data['Ticket Status']}</span> <br>
+                            `
+                    }
+                    if (data['Ticket URL'] !== "Undefined") {
+                        event_box.innerHTML +=
+                            `
+                            <span id="event-title-TicketAt">Buy Ticket At:</span> <br>
+                            <span id="event-detail-link-footer"> <a href="${data['Ticket URL']}" target="_blank">Ticketmaster</a> </span>
+                            `
+                    }
+
+                    let style_ticket_status = document.getElementById("style_ticket_status");
+                    if (data['Ticket Status'] === "On Sale") {
+                        style_ticket_status.style.width = "auto";
+                        style_ticket_status.style.height = "24px";
+                        style_ticket_status.style.backgroundColor = "green";
+                        style_ticket_status.style.display = "inline-block";
+                        style_ticket_status.style.marginLeft = "70px";
+                        style_ticket_status.style.marginTop = "5px";
+                        style_ticket_status.style.marginBottom = "10px";
+                        style_ticket_status.style.borderRadius = "10px";
+                        style_ticket_status.style.fontFamily = "Arial";
+                        style_ticket_status.style.textAlign = "center";
+                        style_ticket_status.style.color = "white";
+                        style_ticket_status.style.padding = "6px 5px 0";
+                    }
+                    if (data['Ticket Status'] === "Off Sale") {
+                        style_ticket_status.style.width = "auto";
+                        style_ticket_status.style.height = "24px";
+                        style_ticket_status.style.backgroundColor = "red";
+                        style_ticket_status.style.display = "inline-block";
+                        style_ticket_status.style.marginLeft = "70px";
+                        style_ticket_status.style.marginTop = "5px";
+                        style_ticket_status.style.marginBottom = "10px";
+                        style_ticket_status.style.borderRadius = "10px";
+                        style_ticket_status.style.fontFamily = "Arial";
+                        style_ticket_status.style.textAlign = "center";
+                        style_ticket_status.style.color = "white";
+                        style_ticket_status.style.padding = "6px 5px 0";
+                    }
+                    if (data['Ticket Status'] === "Cancelled") {
+                        style_ticket_status.style.width = "auto";
+                        style_ticket_status.style.height = "24px";
+                        style_ticket_status.style.backgroundColor = "black";
+                        style_ticket_status.style.display = "inline-block";
+                        style_ticket_status.style.marginLeft = "70px";
+                        style_ticket_status.style.marginTop = "5px";
+                        style_ticket_status.style.marginBottom = "10px";
+                        style_ticket_status.style.borderRadius = "10px";
+                        style_ticket_status.style.fontFamily = "Arial";
+                        style_ticket_status.style.textAlign = "center";
+                        style_ticket_status.style.color = "white";
+                        style_ticket_status.style.padding = "6px 5px 0";
+                    }
+                    if (data['Ticket Status'] === "Postponed" || data['Ticket Status'] === "Rescheduled") {
+                        style_ticket_status.style.width = "auto";
+                        style_ticket_status.style.height = "24px";
+                        style_ticket_status.style.backgroundColor = "orange";
+                        style_ticket_status.style.display = "inline-block";
+                        style_ticket_status.style.marginLeft = "70px";
+                        style_ticket_status.style.marginTop = "5px";
+                        style_ticket_status.style.marginBottom = "10px";
+                        style_ticket_status.style.borderRadius = "10px";
+                        style_ticket_status.style.fontFamily = "Arial";
+                        style_ticket_status.style.textAlign = "center";
+                        style_ticket_status.style.color = "white";
+                        style_ticket_status.style.padding = "6px 5px 0";
+                    }
+
+                    if (data['SeatMap_URL'] !== "Undefined") {
+                        event_box.innerHTML +=
+                            `
+                            <span id="event-SeatMap"><img src="${data['SeatMap_URL']}" alt="SeatMap"></span>
+                            `
+                    }
+
+                    let Icon_show_venue = document.getElementById("Icon_show_venue");
+                    Icon_show_venue.innerHTML =
+                        `
+                        <span id="venue_text" style="display: block;">Show Venue Details</span>
+                        <div id="arow_icon" style="display: block;" onclick="showVenueDetail(${eventRow})"></div>
+                        `;
+                    scrollToElement();
+                })
+                .catch(err => {
+                    console.log("Fail to load data!", err);
+                })
+        }
+
+        function showVenueDetail(eventRow) {
+            event.preventDefault();
+            let kwvalue = document.getElementById("keyword").value.trim();
+            let disvalue = document.getElementById("distance").value.trim();
+            let catvalue = document.getElementById("category").value.trim();
+            let locvalue = document.getElementById("location").value.trim();
+
+            let venuesID = document.getElementById("venue_text");
+            let arowsID = document.getElementById("arow_icon");
+            let venue_box = document.getElementById("Venue_details");
+            let venue_replace = document.getElementById("Icon_show_venue");
+
+            if (disvalue === '')
+                disvalue = 10;
+
+            venue_box.innerHTML = "";
+
+            let Query_string = "http://127.0.0.1:8080/venue?";
+            // let Query_string = "https://hw6-flask.wl.r.appspot.com/venue?";
+            Query_string += "input_kw=" + kwvalue + "&input_dist=" + disvalue + "&input_cat=" + catvalue + "&input_location=" + locvalue + "&Row=" + eventRow;
+
+            fetch(Query_string)
+                .then(res => {
+                    if (res.status === 200)
+                        return res.json();
+                    else
+                        throw new Error("Fail to connect server!")
+                })
+                .then(data => {
+                    console.log(data);
+                    if (data === 'No Records found') {
+                        let Venue_details = document.getElementById("Venue_details");
+                        Venue_details.innerHTML = '';
+                        let Icon_show_venue = document.getElementById("Icon_show_venue");
+                        Icon_show_venue.innerHTML = '';
+                    }
+                    else {
+                        let GoogleQuery = "https://www.google.com/maps/search/?api=1&query=" + data['Venue Name'] + ', ' + data['Venue Address'] +
+                            ', ' + data['Venue City & State'] + ', ' + data['Venue PostalCode']
+                        venue_replace.innerHTML = venue_box.innerHTML;
+                        if (data['Venue Name'] !== "Undefined") {
+                            venue_box.innerHTML +=
+                                `
+                                <h2 id="venue-head"><span>${data['Venue Name']}</span></h2>
+                                `
+                        }
+                        if (data['Venue Img'] !== "Undefined") {
+                            venue_box.innerHTML +=
+                                `
+                                <span id="Venue-img"><img src="${data['Venue Img']}" alt="VenueImg"></span> <br>
+                                `
+                        } else {
+                            venue_box.innerHTML += '<span id="Venue-img"></span> <br>';
+                        }
+
+                        venue_box.innerHTML +=
+                            `
+                            <span id="address-style">Address:</span> <br>
+                            <span id="venue-detail-address">${data['Venue Address']}</span> <br>
+                            <span id="venue-detail-city">${data['Venue City & State']}</span> <br>
+                            <span id="venue-detail-code">${data['Venue PostalCode']}</span> <br>
+                            <span id="GoogleMap"><a href="${GoogleQuery}" target="_blank">Open in Google Maps</a></span> <br>
+                            `
+                        if (data['Upcoming Events'] !== "Undefined" && data['Venue Img'] !== "Undefined") {
+                            venue_box.innerHTML +=
+                                `
+                                <span id="MoreEvent"><a href="${data['Upcoming Events']}" target="_blank">More events at this venue</a></span> <br>
+                                <span id="vertical-line"></span>
+                                `
+                        } else if (data['Upcoming Events'] !== "Undefined" && data['Venue Img'] === "Undefined") {
+                            venue_box.innerHTML +=
+                                `
+                                <span id="MoreEvent-Noimg"><a href="${data['Upcoming Events']}" target="_blank">More events at this venue</a></span> <br>
+                                <span id="vertical-line"></span>
+                                `
+                        } else if (data['Upcoming Events'] === "Undefined" && data['Venue Img'] !== "Undefined") {
+                            venue_box.innerHTML +=
+                                `
+                                <span id="MoreEvent-img-No">More events at this venue</span> <br>
+                                <span id="vertical-line"></span>
+                                `
+                        } else {
+                            venue_box.innerHTML +=
+                                `
+                                <span id="MoreEvent-No">More events at this venue</span> <br>
+                                <span id="vertical-line"></span>
+                                `
+                        }
+                        venue_box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                })
+                .catch(err => {
+                    console.log("Fail to load data!", err);
+                })
+        }
+
+        function ClearData() {
+            let kwvalue = document.getElementById("keyword").value.trim();
+            let disvalue = document.getElementById("distance").value.trim();
+            let catvalue = document.getElementById("category").value.trim();
+            let locvalue = document.getElementById("location").value.trim();
+
+            let NoRecord = document.getElementById("No_record");
+            let DisplayTable = document.getElementById("Display_table");
+            let Event_details = document.getElementById("Event_details");
+            let Venue_details = document.getElementById("Venue_details");
+            let Icon_show_venue = document.getElementById("Icon_show_venue");
+
+
+            if (kwvalue !== "")
+                kwvalue = '';
+            if (disvalue !== 10)
+                disvalue = 10;
+            if (catvalue !== 'Default')
+                catvalue = 'Default'
+            if (locvalue !== "")
+                locvalue = '';
+            if (detect.checked === true)
+                locbox.style.display = 'block';
+
+            NoRecord.innerHTML = '';
+            DisplayTable.innerHTML = '';
+            DisplayTable.style.display = 'none';
+            Event_details.innerHTML = '';
+            Venue_details.innerHTML = '';
+            Icon_show_venue.innerHTML = '';
+
+        }
+
+        function ClearEventVenueData() {
+            let Venue_details = document.getElementById("Venue_details");
+            Venue_details.innerHTML = '';
+            let no_record = document.getElementById("No_record");
+            no_record.innerHTML = '';
+            let event_box = document.getElementById("Event_details");
+            event_box.innerHTML = '';
+            let Icon_show_venue = document.getElementById("Icon_show_venue");
+            Icon_show_venue.innerHTML = '';
+        }
+
+        function ClearVenueData() {
+            let Venue_details = document.getElementById("Venue_details");
+            Venue_details.innerHTML = '';
+            let no_record = document.getElementById("No_record");
+            no_record.innerHTML = '';
+            let Icon_show_venue = document.getElementById("Icon_show_venue");
+            Icon_show_venue.innerHTML = '';
+        }
+
+    </script>
+</body>
+
+</html>

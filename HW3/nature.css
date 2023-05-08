@@ -1,0 +1,139 @@
+.Home-container {
+    width: 800px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.Home-header {
+    width: 666px;
+    height: 131px;
+    border: 2px solid black;
+    margin: 34px auto;
+    text-align: center;
+}
+
+.Menu-name {
+    margin-top: 15px;
+    font-family: Georgia;
+    font-size: 58px;
+    font-weight: 540;
+    box-sizing: border-box;
+}
+
+.Menu-item {
+    font-family: Georgia;
+    margin-top: 12px;
+    color: rgb(133, 132, 132);
+    font-style: italic;
+    font-size: small;
+}
+
+span {
+    margin-right: 20px;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+    color: rgb(133, 132, 132);
+}
+
+.Menu-item-home {
+    color: black;
+}
+
+.Menu-item-nature {
+    color: black;
+}
+
+.Home-content {
+    width: 800px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 47px;
+}
+
+.Home-content-text-placehold {
+    width: 100%;
+    height: 26px;
+}
+
+.Home-content-text {
+    font-family: Georgia;
+    font-size: 23px;
+    font-weight: normal;
+    padding-left: 20px;
+    margin-bottom: 6px;
+}
+
+.Home-content-top-left {
+    width: 374px;
+    height: 374px;
+    float: left;
+    margin-right: 7px;
+    margin-left: 20px;
+}
+
+.Home-content-top-right {
+    width: 374px;
+    height: 374px;
+    float: left;
+}
+
+.Home-content-bottom-left {
+    width: 374px;
+    height: 374px;
+    float: left;
+    margin-right: 7px;
+    margin-top: 7px;
+    margin-left: 20px;
+}
+
+.Home-content-bottom-right {
+    width: 374px;
+    height: 374px;
+    float: left;
+    margin-top: 7px;
+}
+
+.Home-foot {
+    width: 800px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.Home-foot>.Home-foot-up {
+    font-family: Georgia;
+    padding-top: 782px;
+    text-align: center;
+    font-style: italic;
+    font-size: small;
+}
+
+.Home-foot-down {
+    width: 115px;
+    height: auto;
+    margin: 25px auto;
+    padding-bottom: 25px;
+}
+
+.Home-foot-down-left {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 30px;
+}
+
+.Home-foot-down-mid {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 30px;
+}
+
+.Home-foot-down-right {
+    width: 18px;
+    height: 18px;
+    float: left;
+}

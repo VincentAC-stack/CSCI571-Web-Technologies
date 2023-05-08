@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/black">
+        
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/search_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:shapeAppearanceOverlay="@style/roundimageview"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:paddingStart="20dp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"/>
+
+            <TextView
+                android:id="@+id/venue_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:paddingStart="20dp"
+                android:paddingTop="17dp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"/>
+
+            <TextView
+                android:id="@+id/cat_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:paddingStart="20dp"
+                android:paddingTop="17dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/search_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="@color/white"
+                android:gravity="right"
+                android:paddingTop="2dp"/>
+
+            <TextView
+                android:id="@+id/search_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textColor="@color/white"
+                android:paddingTop="21dp"
+                android:gravity="right"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/heart"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/heart_outline"
+                android:visibility="gone"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/heart_fill"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/heart_filled"
+                android:visibility="visible"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".EventDetailActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/event_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/ActionBar">
+
+        <TextView
+            android:id="@+id/Event_Title"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ActionBarTitleColor"
+            android:textSize="18sp"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/event_heart_filled"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/heart_filled"
+            android:visibility="gone"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/event_heart_outline"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/heart_outline"
+            android:visibility="visible"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/Twitter_Btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/twitter_round"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/Facebook_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/facebook"/>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_tab_layout"
+        app:tabBackground="@drawable/tab_color_selector"
+        app:tabSelectedTextColor="@color/ActionBarTitleColor"
+        app:tabTextColor="@color/white"
+        app:tabIndicatorColor="@color/ActionBarTitleColor"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        android:elevation="10dp"
+        app:tabInlineLabel="true"
+        app:tabTextAppearance="@style/CustomTabTextAppearance">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/info_icon"
+            android:text="DETAILS"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/artist_icon"
+            android:text="ARTIST(S)"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/venue_icon"
+            android:text="VENUE"/>
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/event_view_Pager"
+        android:layout_below="@id/event_tab_layout"/>
+
+</LinearLayout>

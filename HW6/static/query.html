@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Search</title>
+
+    <link rel="stylesheet" href="./events.css">
+</head>
+
+<body style="margin: 0">
+    <div class="container">
+        <div class="events-search-text">Events Search</div>
+        <hr>
+        <form action="/search" method="get" id="my-form">
+            <div class=" input-row1-container">
+                <label for="keyword" class="input-text-required">Keyword</label>
+                <div>
+                    <input class="keyword-box" type="text" name="input_kw" id="keyword" required>
+                </div>
+            </div>
+
+            <div class="input-row2-container">
+                <div>
+                    <label for="distance" class="input-text-distance">Distance (miles)</label>
+                    <label for="category" class="input-text-category-required">Category</label>
+                </div>
+
+                <div>
+                    <input class="distance-box" type="number" name="input_dist" id="distance" placeholder="10">
+                    <select class="category-box" name="input_cat" id="category">
+                        <option value="Default">Default</option>
+                        <option value="Music">Music</option>
+                        <option value="Sports">Sports</option>
+                        <option value="ArtsTheatre">Arts & Theatre</option>
+                        <option value="Film">Film</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row3-container">
+                <label for="location" class="input-text-required">Location</label>
+                <span>
+                    <input style="margin-left: 8px; margin-right: 0px;" type="checkbox" name="" id="auto-detection"
+                        onclick="boxdisappear()">
+                    <label class="check-text" for="auto-detection">Auto-Detect Location</label>
+                </span>
+                <div>
+                    <input class="location-box" type="text" name="input_location" id="location" required>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button class="search-button" id="searchBtn" type="submit">SEARCH</button>
+                <button class="clear-button" type="reset" id="clearBtn" onclick="ClearData()">CLEAR</button>
+            </div>
+        </form>
+
+    </div>
+
+    <div id='No_record'>
+
+    </div>
+    <table id="Display_table">
+
+    </table>
+
+
+    <div id="Event_details">
+
+    </div>
+    <div id="Icon_show_venue">
+
+    </div>
+    <div id="Venue_details">
+
+    </div>
+
+    <script>
+        var searchBtn = document.getElementById("searchBtn");
+        var detect = document.getElementById("auto-detection");
+        var locbox = document.getElementById("location");
+
+        function boxdisappear() {
+            if (detect.checked === true) {
+                locbox.style.display = 'none';
+                let IP_API = "https://ipinfo.io/?token=5f3978d3111782"
+                fetch(IP_API)
+                    .then(res => {
+                        if (res.status === 200)
+                            return res.json();
+                        else
+                            throw new Error("Fail to connect server!")
+                    })
+                    .then(data => {
+                        locbox.value = data['loc'];
+                    })
+                    .catch(err => {
+                        console.log("Fail to load data!", err);
+                    })
+            } else {
+                locbox.value = '';
+                locbox.style.display = 'block';
+            }
+
+        }
+
+        searchBtn.addEventListener("click", () => {
+
+            let kwvalue = document.getElementById("keyword").value.trim();
+            let disvalue = document.getElementById("distance").value.trim();
+            let catvalue = document.getElementById("category").value.trim();
+            let locvalue = document.getElementById("location").value.trim();
+
+            if (disvalue === '')
+                disvalue = 10;
+
+            ClearEventVenueData();
+
+            // let Query_string = "http://127.0.0.1:8080/search?";
+            let Query_string = "https://hw6-flask.wl.r.appspot.com/search?";
+            Query_string += "input_kw=" + kwvalue + "&input_dist=" + disvalue + "&input_cat=" + catvalue + "&input_location=" + locvalue;
+            console.log(Query_string);
+
+            fetch(Query_string)
+                .then(res => {
+                    if (res.status === 200)
+                        return res.json();
+                    else
+                        throw new Error("Fail to connect server!");
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(err => {
+                    console.log("Fail to load data!", err);
+                })
+        });
+
+        function ClearData() {
+            let kwvalue = document.getElementById("keyword").value.trim();
+            let disvalue = document.getElementById("distance").value.trim();
+            let catvalue = document.getElementById("category").value.trim();
+            let locvalue = document.getElementById("location").value.trim();
+
+            let NoRecord = document.getElementById("No_record");
+            let DisplayTable = document.getElementById("Display_table");
+            let Event_details = document.getElementById("Event_details");
+            let Venue_details = document.getElementById("Venue_details");
+            let Icon_show_venue = document.getElementById("Icon_show_venue");
+
+
+            if (kwvalue !== "")
+                kwvalue = '';
+            if (disvalue !== 10)
+                disvalue = 10;
+            if (catvalue !== 'Default')
+                catvalue = 'Default'
+            if (locvalue !== "")
+                locvalue = '';
+            if (detect.checked === true)
+                locbox.style.display = 'block';
+
+            NoRecord.innerHTML = '';
+            DisplayTable.innerHTML = '';
+            DisplayTable.style.display = 'none';
+            Event_details.innerHTML = '';
+            Venue_details.innerHTML = '';
+            Icon_show_venue.innerHTML = '';
+
+        }
+
+        function ClearEventVenueData() {
+            let Venue_details = document.getElementById("Venue_details");
+            Venue_details.innerHTML = '';
+            let no_record = document.getElementById("No_record");
+            no_record.innerHTML = '';
+            let event_box = document.getElementById("Event_details");
+            event_box.innerHTML = '';
+            let Icon_show_venue = document.getElementById("Icon_show_venue");
+            Icon_show_venue.innerHTML = '';
+        }
+
+        function ClearVenueData() {
+            let Venue_details = document.getElementById("Venue_details");
+            Venue_details.innerHTML = '';
+            let no_record = document.getElementById("No_record");
+            no_record.innerHTML = '';
+            let Icon_show_venue = document.getElementById("Icon_show_venue");
+            Icon_show_venue.innerHTML = '';
+        }
+
+    </script>
+</body>
+
+</html>

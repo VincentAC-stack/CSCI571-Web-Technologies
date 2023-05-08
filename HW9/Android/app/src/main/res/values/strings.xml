@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">EventFinder</string>
+    <string name="Keyword">Keyword*</string>
+    <string name="Distance">Distance (Miles)*</string>
+    <string name="Category">Category*</string>
+    <string name="Location">Location*</string>
+    <string-array name="cat">
+        <item>All</item>
+        <item>Music</item>
+        <item>Sports</item>
+        <item>Arts &amp; Theatre</item>
+        <item>Film</item>
+        <item>Miscellaneous</item>
+    </string-array>
+</resources>
