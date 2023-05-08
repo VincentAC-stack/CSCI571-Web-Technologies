@@ -30,7 +30,7 @@ In addition the course will also cover the following subsidiary topics:
 * Become familiar with HTML and CSS technologies
 * Learn how to imitate two web pages
 ### Reference Video (Click on the image to view)
-[![](http://img.youtube.com/vi/eCuGxuPYqMQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=DX95llsnCJw "Reference Video")
+[![](https://github.com/VincentAC-stack/CSCI571-Web-Technologies/blob/main/Image/HW3.png)](https://www.youtube.com/watch?v=DX95llsnCJw "Reference Video")
 
 ## Homework 5: Cloud Setup (Python)
 
@@ -42,7 +42,7 @@ In addition the course will also cover the following subsidiary topics:
 * Get experience using JSON parsers in Python and JavaScript.
 * Getting hands-on experience in GCP, AWS or Azure.
 ### Reference Video (Click on the image to view)
-[![](http://img.youtube.com/vi/HdbUzkQcMJg/maxresdefault.jpg)](https://www.youtube.com/watch?v=AtfgYB3D3DE "Reference Video")
+[![](https://github.com/VincentAC-stack/CSCI571-Web-Technologies/blob/main/Image/HW6.png)](https://www.youtube.com/watch?v=AtfgYB3D3DE "Reference Video")
 
 ## Homework 7: Cloud Setup (NodeJS)
 
@@ -56,7 +56,7 @@ In addition the course will also cover the following subsidiary topics:
 ### Reference Video (Click on the image to view)
 |Web View|Mobile View|
 |:---:|:---:|
-|[![](http://img.youtube.com/vi/FIbPKygGKVs/maxresdefault.jpg)](https://www.youtube.com/watch?v=8FV4jEmK1T0 "Reference Video")|[![](http://img.youtube.com/vi/tnBelUqY2h0/maxresdefault.jpg)](https://www.youtube.com/watch?v=A0nkmA4Tnp8 "Reference Video")|
+|[![](https://github.com/VincentAC-stack/CSCI571-Web-Technologies/blob/main/Image/HW8-Web.png)](https://www.youtube.com/watch?v=8FV4jEmK1T0 "Reference Video")|[![](https://github.com/VincentAC-stack/CSCI571-Web-Technologies/blob/main/Image/HW8-Mobile.png)](https://www.youtube.com/watch?v=A0nkmA4Tnp8 "Reference Video")|
 
 
 
@@ -68,4 +68,4 @@ In addition the course will also cover the following subsidiary topics:
 * Learn to use the Google Maps APIs and Android SDK.
 * Get familiar with third party libraries like Picasso, Glide and Volley.
 ### Reference Video (Click on the image to view)
-[![](http://img.youtube.com/vi/Jzet_z5NGKk/maxresdefault.jpg)](https://www.youtube.com/watch?v=jKw4w-zuYiA "Reference Video")
+[![](https://github.com/VincentAC-stack/CSCI571-Web-Technologies/blob/main/Image/HW9.png)](https://www.youtube.com/watch?v=jKw4w-zuYiA "Reference Video")
